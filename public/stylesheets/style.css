@@ -1,0 +1,23 @@
+html, body {
+	color: #fff;
+	font-size: 14pt;
+	background-color: transparent;
+}
+h1 {
+	color: green;
+	text-align: center;
+}
+#kCode {
+	color: red;
+	font-size: 24pt;
+	text-align: center;
+}
+#vlc,
+#vlc embed {
+	position:absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+}

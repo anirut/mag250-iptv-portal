@@ -1,0 +1,11 @@
+extends ./layout.jade
+
+block content
+	h1= title
+	p Welcome to #{title}
+	#kCode
+
+	include ./player.jade
+
+	| <script src="/javascripts/jquery-2.2.3.min.js"></script>
+	| <script src="/javascripts/script.js"></script>
