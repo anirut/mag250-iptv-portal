@@ -69,7 +69,14 @@ function switcher(evt) {
 			} else {
 				item.next('.item').focus();
 			}
-		case 38, 40: // up, down
+			break;
+		case 49: // 1
+			window.location.href = '/films?type=fs';
+			break;
+		case 50: // 2
+			window.location.href = '/films?type=ex';
+			break;
+		case 38, 40: // up & down
 			break;
 		case 82: // pause/resume
 			stb.IsPlaying() ? stb.Pause() : stb.Continue();
@@ -84,10 +91,14 @@ function switcher(evt) {
 		case 109: // volume down
 			stb.SetVolume( stb.GetVolume() - 10 );
 			break;
+		case 8: // back
+			window.location.href = '/';
+			break;
 	}
 }
 function getStreamLink(evt) {
-	var url = ['/getStream?url=', $(evt.target).data('src')].join('');
+	var tgt = $(evt.target);
+	var url = ['/getStream?url=', tgt.data('src'), '&type=', tgt.parent().data('type')].join('');
 	$.getJSON(url, function(data) {
 		if (data) {
 			gSTB.Play( ['auto ', data].join('') );

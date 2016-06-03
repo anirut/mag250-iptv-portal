@@ -45,3 +45,13 @@ html, body {
 	font-size: 14pt;
 	z-index: 100;
 }
+a[class*='-portal'] {
+	width: 292px;
+	float: left;
+	font-size: 130pt;
+	border-radius: 0;
+}
+a[class*='-portal']:focus {
+	border-color: #007095;
+	background-color: #008CBA;
+}
