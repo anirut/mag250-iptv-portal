@@ -1,9 +1,9 @@
 extends ./layout.jade
 
 block content
-	h1= title
-	p Welcome to #{title}
-	#kCode
+	#kCode.badge.warning
+	#content
+		include ./films/list.jade
 
 	include ./player.jade
 

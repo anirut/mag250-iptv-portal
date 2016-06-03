@@ -1,0 +1,38 @@
+Get video object:
+curl 'https://fs.to/video/films/view_iframe/iM7yOtfdldzaHKgUi8kh4A?play&file=8889137' -H 'X-Requested-With: XMLHttpRequest'
+
+
+curl 'https://fs.to/video/films/ig9Yt4i4kq6pWSKjyI7kju-padenije-londona.html?ajax&id=ig9Yt4i4kq6pWSKjyI7kju&folder=0' -H 'X-Requested-With: XMLHttpRequest'
+
+curl 'https://fs.to/video/films/iM7yOtfdldzaHKgUi8kh4A-padenije-londona.html?ajax&id=M7yOtfdldzaHKgUi8kh4A&folder=868477' -H 'X-Requested-With: XMLHttpRequest' -H 'Cookie: aimg_default-player-iframe=602186380; aimg_default=884144949; aimg_fsua=3199509869; aimg_theme-video=245054101;vs=5d7f0a4238cc199c;'
+
+
+function T(aa) {
+                if (N.admixerJSONP.proxy.enabled) {
+                    var ac = N.admixerJSONP.proxy.servers[Math.floor(Math.random() * N.admixerJSONP.proxy.servers.length)],
+                        ab = e.base64.encode("||||4||||||||" + tARG.rst(13, 52, 10) + "||" + aa);
+                    ab = ab.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, ",");
+                    var Z = "http://" + ac + ".filecdn.to/ff/" + ab + "/playvideo_" + tARG.rst(25, 26, 36) + "." + tARG.rst(1, 52, 10) + "." + tARG.rst(10, 52, 10) + "." + tARG.rst(10, 52, 10) + "." + tARG.rst(10, 52, 10) + ".mp4";
+                    return Z
+                } else {
+                    return aa
+                }
+            }
+
+
+'Cookie: 
+aplayer_completePrerollsViewing=1; 
+last_series=M7yOtfdldzaHKgUi8kh4A%3A8888737%3A%3A0%3A0%3A0%3A%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9%3A%D0%B4%D1%83%D0%B1%D0%BB%D1%8F%D0%B6%3Anull%3A; 
+aimg_default-player-iframe=602186380; 
+aimg_default=884144949; 
+aimg_fsua=3199509869; 
+aimg_theme-video=245054101; 
+vs=5d7f0a4238cc199c; 
+fp_ch=qkoq1yv127kt9dff2qede8hnn55sbf97; 
+PHPSESSID=f85b683c0b6ad8bfa9513479b6f984c5; 
+admixerLeftBanner=4; 
+aimg_default=884144949; 
+aimg_fsua=3199509869; 
+_ga=GA1.2.188891346.1460992724; 
+pa=1460999986478.82250.49398526130244136fs.to0.5554527514614165+3; 
+MarketGidStorage=%7B%220%22%3A%7B%22svspr%22%3A%22%22%2C%22svsds%22%3A17%2C%22TejndEEDj%22%3A%22MTQ2MDk5MDExMTQzMDU4MDUxMzY2MjE%3D%22%7D%2C%22C580513%22%3A%7B%22page%22%3A3%2C%22time%22%3A1461082000677%7D%2C%22C571933%22%3A%7B%22page%22%3A1%2C%22time%22%3A1460999368772%7D%7D'

@@ -1,42 +1,30 @@
 $(function() {
-	// var player = new Player();
-	$('body').on('keydown', function(e) {
-		var kCode = e.which || e.keyCode;
+	$('#content .item').first().focus();
 
-		$('#kCode').html(kCode);
-		// player.init();
+	$('body').on('keydown', switcher);
 
-		switch(kCode) {
-			case 112: // ok 
-				window.location.reload() || location.reload();	
-				break;
-			// case 82: //play/pause
-			// 	player.play('http://data08-cdn.datalock.ru/fi2lm/74d00f7d6545f2d3360a5e8137342379/7f_Borodach.01.a1.26.01.16.mp4');
-			// 	break;
-			// default:
-			// 	player.stop();
-			// 	break;
-		}
-	});
+	/*
+		Init vlc player with events
+	*/
+		// stbEvent = {
+		// 	onEvent : function(data){},
+		// 	event : 0
+		// };
+		var stb = gSTB;
 
-	// var list = {
-	// 	'Физрук download': 'https://fs.to/get/dl/5q1zvlj19dnb95lsb35027jx2.0.1139013157.974127405.1460732823/Fizruk.s03e07.2016.SATRip.avi',
-	// 	'Бородач stream': 'http://data08-cdn.datalock.ru/fi2lm/74d00f7d6545f2d3360a5e8137342379/7f_Borodach.01.a1.26.01.16.mp4',
-	// 	'Физрук stream': 'http://n41.filecdn.to/ff/YWVhMTM1MWE3YTYxZmFlMGQ2MGNiOTY3YjU0NmYzMWN8ZnN0b3wzMjgwNjI1MjUzfDEwMDAwfDJ8MHxufDQxfGI2YTRiYTdlZmQ3ZGYzOTMzNjkxZWY4MjZlMTNlMTkzfDB8MjE6Ny4xMjphfDB8MTIzMzExNDY2NnwxNDYwOTQwMzYxLjkwMjE,/playvideo_5q1zvlobdgzwaame6jcnivd6e.0.1765758616.974127405.1460732825.mp4'
-	// };
+		// stb.InitEvents();
+		stb.DeinitPlayer();
+		stb.Stop();
+		stb.InitPlayer();
+		stb.SetVolume(85);
+		// stb.Play('auto http://fs.to/get/playvideo/64z34idird3n3vgp397ts9pdi.0.1139013157.2185543202.1464866031.mp4');
+		// $('#content').fadeOut();
 
-	// stbEvent = {
-	// 	onEvent : function(data){},
-	// 	event : 0
-	// };
-	var stb = gSTB;
+		// debug(stb);
+});
 
-	// stb.InitEvents();
-	stb.InitPlayer();
-	stb.Play('auto http://hdgo.louvre.zerocdn.com/2a283c033561ced9645a27e4fe5f5a1a:2016041803/flv/720-58fe074c1cad1beb2e255cda47f590bf.flv');
-	$('body').fadeOut();
-
-	var debug = {
+function debug(stb) {
+	var debugPlayer = {
 		'IsPlaying': stb.IsPlaying(),
 		'AudioPIDs': stb.GetAudioPIDs(),
 		'AudioPID':  stb.GetAudioPID(),
@@ -46,15 +34,69 @@ $(function() {
 		'Position': stb.GetPosTimeEx(),
 		'Duration': stb.GetMediaLenEx(),
 		'BufferLoad': stb.GetBufferLoad()
-	}, ent, ul = $('<ul>');
+	}, tmp = $('<div>');
 
-	for (ent in debug) {
-		ul.append($('<li>').text( [ent, ' : ', debug[ent]].join('') ));
+	for (ent in debugPlayer) {
+		tmp.append( $('<div>').text([ent, ' : ', debugPlayer[ent]].join('')) );
 	}
-	$('body').append(ul);
-});
+	$('#kCode').html( tmp.html() ).show();
+	tmp = null;
+}
+function switcher(evt) {
+	var kCode = evt.which || evt.keyCode,
+		item = $('#content .item:focus'),
+		stb = gSTB;
+
+	$('#kCode').html(kCode).show();
+
+	switch(kCode) {
+		case 112: // f1
+			window.location.reload() || location.reload();	
+			break;
+		case 13: // ok
+			getStreamLink(evt);
+			break;
+		case 37: // left
+			if (stb.IsPlaying()) {
+				stb.SetPosPercentEx( stb.GetPosPercentEx() - 1000 );
+			} else {
+				item.prev('.item').focus();
+			}
+			break;
+		case 39: // right
+			if (stb.IsPlaying()) {
+				stb.SetPosPercentEx( stb.GetPosPercentEx() + 1000 );
+			} else {
+				item.next('.item').focus();
+			}
+		case 38, 40: // up, down
+			break;
+		case 82: // pause/resume
+			stb.IsPlaying() ? stb.Pause() : stb.Continue();
+			break;
+		case 83: // stop
+			stb.Stop();
+			$('#content').fadeIn();
+			break;
+		case 107: // volume up
+			stb.SetVolume( stb.GetVolume() + 10 );
+			break;
+		case 109: // volume down
+			stb.SetVolume( stb.GetVolume() - 10 );
+			break;
+	}
+}
+function getStreamLink(evt) {
+	var url = ['/getStream?url=', $(evt.target).data('src')].join('');
+	$.getJSON(url, function(data) {
+		if (data) {
+			gSTB.Play( ['auto ', data].join('') );
+			$('#content').fadeOut();
+		}
+	});
+}
 
 // function Player() { this.stb = (typeof gSTB != 'undefined') ? gSTB : false; }
-// Player.prototype.init = function() { return this.stb && this.stb.InitPlayer(); }
-// Player.prototype.play = function(url) { this.stb.Play(['auto ', url].join('')); }
-// Player.prototype.stop = function() { this.stb.Stop(); }
+	// Player.prototype.init = function() { return this.stb && this.stb.InitPlayer(); }
+	// Player.prototype.play = function(url) { this.stb.Play(['auto ', url].join('')); }
+	// Player.prototype.stop = function() { this.stb.Stop(); }

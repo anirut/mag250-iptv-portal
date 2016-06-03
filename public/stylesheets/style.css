@@ -1,23 +1,47 @@
 html, body {
-	color: #fff;
-	font-size: 14pt;
-	background-color: transparent;
+	overflow: hidden;
+	background: transparent;
 }
-h1 {
-	color: green;
-	text-align: center;
+.items-container {
+	width: 3000px;
+	overflow: hidden;
+}
+.item {
+	float: left;
+	width: 120px;
+	padding: 0 5px;
+	opacity: .7;
+}
+.item .img {
+	display: block;
+	position: relative;
+	width: 110px;
+	height: 680px;
+	background-size: cover;
+}
+.item p {
+	display: none;
+	height: 32px;
+	color: #2196F3;
+	font: normal 18pt/24pt 'Exo 2', sans-serif;
+	overflow: hidden;
+}
+.item:focus {
+	width: 480px;
+	background: #E0E0E0;
+	opacity: 1;
+}
+.item:focus .img {
+	width: 470px;
+}
+.item:focus p {
+	display: block;
 }
 #kCode {
-	color: red;
-	font-size: 24pt;
-	text-align: center;
-}
-#vlc,
-#vlc embed {
-	position:absolute;
+	position: absolute;
+	display: none;
 	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: -1;
+	right: 0;
+	font-size: 14pt;
+	z-index: 100;
 }

@@ -1,0 +1,8 @@
+if data.error
+	#{data.error}
+else
+	.items-container
+		each val, index in data.list
+			a.item(tabindex="-1", data-src='#{val.link}')
+				div.img(style='background-image: url(#{val.poster})')
+				p= val.title
