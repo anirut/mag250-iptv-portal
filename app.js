@@ -11,7 +11,7 @@ var grbs = {
   ex: exGrubber
 };
 
-app.set('port', 43555);
+app.set('port', 8080);
 app.set('views', path.resolve(__dirname, 'views'));
 app.set('public', path.resolve(__dirname, 'public'));
 app.set('json spaces', 4);
