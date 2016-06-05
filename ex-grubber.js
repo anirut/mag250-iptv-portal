@@ -1,9 +1,10 @@
+'use strict'
+
 require('consoleplusplus');
 var request = require('request');
 var cheerio = require('cheerio');
 var grubber = module.exports = {
 	urls: {
-		// <guid isPermaLink> ID необходимого элемента аля http://ex.ua/rss/ID </guid>
 		films: 'http://ex.ua/rss/2'
 	},
 	films: {
@@ -11,26 +12,29 @@ var grubber = module.exports = {
 			grubber.films.list(next);
 		},
 		list: function(next) {
-			request(grubber.urls['films'], function(error, response, body) {
-				if (!error) {
-					var $ = cheerio.load(body, { xmlMode: true }),
-						list = $('channel').children('item'), a, title, filmsList = [];
+			console.time('EX list');
+			new Promise(function(resolve, reject) {
+				request(grubber.urls['films'], function(error, response, body) {
+					if (!error) {
+						var $ = cheerio.load(body, { xmlMode: true }),
+							list = $('channel').children('item'), a, title, filmsList = [];
 
-					list.each(function(i, ent) {
-						title = $(ent).children('title');
-						a = $(ent).children('link');
-						filmsList.push({
-							title: title.text(),
-							poster: grubber.films.getPoster($, ent),
-							link: a.text()
+						list.each(function(i, ent) {
+							title = $(ent).children('title');
+							a = $(ent).children('link');
+							filmsList.push({
+								title: title.text(),
+								poster: grubber.films.getPoster($, ent),
+								link: a.text()
+							});
 						});
-					});
-
-					next({ list: filmsList });
-				} else {
-					next({ error: error });
-				}
-			});
+						resolve(filmsList);
+					} else reject( new Error(error) );
+				});
+			})
+			.then(function(l) { next({ list: l }) })
+			.catch(function(e) { next({ error: e }) });
+			console.timeEnd('EX list');
 		},
 		getPoster: function($, ent) {
 			if (!$ || !ent) return;
@@ -41,20 +45,22 @@ var grubber = module.exports = {
 		getStream: function(url, next) {
 			if (!url) next({ error: 'grubber.getStream::Need pass url!' });
 
-			request(url, function(error, response, body) {
-				if (error) next({error: error});
-
-				var $ = cheerio.load(body);
-				var html = $('body').html();
-				var reg = /player_list[a-z0-9_='"{}/:,. ]+/g;
-				var list = html.match(reg);
-
-				if (list && list[0]) {
-					next({ stream: list[0].match(/http[:/.a-z0-9]+/g) });
-				} else {
-					next({ error: 'There is no player_list in html' });
-				}
-			});
+			console.time('EX stream');
+			new Promise(function(resolve, reject) {
+				request(url, function(error, response, body) {
+					if (!error) {
+						var $ = cheerio.load(body);
+						var html = $('body').html();
+						var reg = /player_list[a-z0-9_='"{}/:,. ]+/g;
+						var list = html.match(reg);
+						if (list && list[0]) resolve(list[0].match(/http[:/.a-z0-9]+/g));
+						else reject('There is no player_list in html');
+					} else reject( new Error(error) );
+				});
+			})
+			.then(function(s) { next({ stream: s }) })
+			.catch(function(e) { next({ error: e }) });
+			console.timeEnd('EX stream');
 		}
 	}
 };

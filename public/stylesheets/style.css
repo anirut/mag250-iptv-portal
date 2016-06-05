@@ -17,7 +17,7 @@ html, body {
 	position: relative;
 	width: 110px;
 	height: 680px;
-	background-size: cover;
+	background-size: 480px 680px;
 }
 .item p {
 	display: none;
@@ -55,3 +55,11 @@ a[class*='-portal']:focus {
 	border-color: #007095;
 	background-color: #008CBA;
 }
+.page-404 {
+	height: 720px;
+	text-align: center;
+	color: #fff;
+	background: #00695C;
+}
+.page-404 h1 { font-size: 100pt; }
+.page-404 p { font-size: 50px; }

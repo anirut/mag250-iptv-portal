@@ -76,6 +76,9 @@ function switcher(evt) {
 		case 50: // 2
 			window.location.href = '/films?type=ex';
 			break;
+		case 89: //i
+			$('#kCode').html('BufferLoad:' + stb.GetBufferLoad());
+			break;
 		case 38, 40: // up & down
 			break;
 		case 82: // pause/resume

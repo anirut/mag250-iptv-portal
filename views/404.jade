@@ -1,0 +1,8 @@
+extends ./layout.jade
+
+block content
+	.page-404
+		h1 404 page
+		p= error || 'OOOOUuuups, something went wrong!....('
+	include ./footer.jade
+	| <script src="/javascripts/script.js"></script>
