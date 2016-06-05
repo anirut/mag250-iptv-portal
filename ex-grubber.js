@@ -3,6 +3,7 @@
 require('consoleplusplus');
 var request = require('request');
 var cheerio = require('cheerio');
+var img2Base64 = require('./img2cssBase64.js');
 var grubber = module.exports = {
 	urls: {
 		films: 'http://ex.ua/rss/2'
@@ -17,18 +18,24 @@ var grubber = module.exports = {
 				request(grubber.urls['films'], function(error, response, body) {
 					if (!error) {
 						var $ = cheerio.load(body, { xmlMode: true }),
-							list = $('channel').children('item'), a, title, filmsList = [];
+							list = $('channel').children('item'),
+							a, title, desc, prPosterList = [];
 
 						list.each(function(i, ent) {
 							title = $(ent).children('title');
 							a = $(ent).children('link');
-							filmsList.push({
-								title: title.text(),
-								poster: grubber.films.getPoster($, ent),
-								link: a.text()
-							});
+							desc = $(ent).children('description').text().trim();
+							prPosterList.push(
+								grubber.films.getPoster($, {
+									title: title.text(),
+									poster: desc,
+									link: a.text()
+								})
+							);
 						});
-						resolve(filmsList);
+
+						Promise.all(prPosterList)
+							.then(resolve, function(error) { reject( new Error(error) ) });
 					} else reject( new Error(error) );
 				});
 			})
@@ -37,10 +44,10 @@ var grubber = module.exports = {
 			console.timeEnd('EX list');
 		},
 		getPoster: function($, ent) {
-			if (!$ || !ent) return;
-			var tmpSrc = $(ent).children('description').text().trim(),
-				reg = /(http:\/\/fs\w+\.[a-z./0-9]+[^?])/g;
-			return tmpSrc.match(reg);
+			if (!$ || !ent.poster) return new Error('ex:getPoster:cherrio or ent.poster isn\'t found');
+			var tmp = ent.poster.match(/http:\/\/fs\w+\.[a-z./0-9?]+/g);
+			ent.poster = tmp.length ? tmp[0].replace(/\d{3}$/g, '200') : ent.poster;
+			return img2Base64.getPoster(ent);
 		},
 		getStream: function(url, next) {
 			if (!url) next({ error: 'grubber.getStream::Need pass url!' });

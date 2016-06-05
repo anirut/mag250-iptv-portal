@@ -3,6 +3,7 @@
 require('consoleplusplus');
 var request = require('request');
 var cheerio = require('cheerio');
+var img2Base64 = require('./img2cssBase64.js');
 var grubber = module.exports = {
 	urls: {
 		films: 'https://brb.to/video/films/'
@@ -18,22 +19,29 @@ var grubber = module.exports = {
 					if (!error) {
 						var $ = cheerio.load(body),
 							list = $('.b-section-list table'), 
-							a, title, filmsList = [];
+							a, title, src, prPosterList = [];
 
 						list.each(function(i, ent) {
 							$(ent).find('td').each(function(x, td) {
 								a = $(td).find('a:first-child');
 								title = a.find('.b-poster-tile__title-short').text().trim();
-								filmsList.push({
-									title: title,
-									poster: grubber.films.getPoster($, td),
-									link: a.attr('href')
-								});
+								src = $(td).find('.b-poster-tile__image img').attr('src');
+								prPosterList.push(
+									grubber.films.getPoster($, {
+										title: title,
+										poster: 'http:' + src,
+										link: a.attr('href')
+									})
+								);
 							});
 						});
-						filmsList.length ? 
-							resolve(filmsList) : 
-							reject( new Error('There\'s no requested table') );
+
+						Promise.all(prPosterList)
+							.then(function(results) {
+								results.length ?
+									resolve(results) :
+									reject( new Error('There\'s no requested table') );
+							}, function(error) { reject( new Error(error) ) });
 					} else reject( new Error(error) );
 				});
 			})
@@ -41,11 +49,10 @@ var grubber = module.exports = {
 			.catch(function(e) { next({ error: e }) });
 			console.timeEnd('FS list');
 		},
-		getPoster: function($, td) {
-			if (!$ || !td) return;
-			var tmpSrc = $(td).find('.b-poster-tile__image img').attr('src'),
-				reg = /6(\/[\d]*\.\w{3}$)/g;
-			return tmpSrc.replace(reg, '1$1');
+		getPoster: function($, ent) {
+			if (!$ || !ent.poster) return new Error('fs:getPoster:cherrio or ent.poster isn\'t found');
+			ent.poster = ent.poster.replace(/6(\/[\d]*\.\w{3}$)/g, '1$1')
+			return img2Base64.getPoster(ent);
 		},
 		getStream: function(url, next) {
 			if (!url) next({ error: 'grubber.getStream::Need pass url!' });
