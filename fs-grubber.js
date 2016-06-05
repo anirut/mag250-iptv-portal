@@ -67,9 +67,12 @@ var grubber = module.exports = {
 			console.time('FS stream');
 			new Promise(function(resolve, reject) {
 				request(opts, function(error, response, body) {
+					console.debug('response::', JSON.stringify(response));
+					console.debug('body::', body);
 					if (!error) {
 						$ = cheerio.load(body);
 						folderLink = $('.link-subtype.m-ru');
+						console.debug('folderLink::', folderLink);
 						if (folderLink.length) {
 							folderID = folderLink.attr('rel').replace(/{[\w_:\s]*\'(\d*)'}/g, '$1');
 							resolve( opts.url.replace(/\d$/g, folderID) );
